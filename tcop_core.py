@@ -64,110 +64,113 @@ class tCOP(object):
 
 if __name__ == '__main__':
 
-    def csv_glob():
-        directory_path = []
-        with open('config.txt', 'r') as config:
-            for read in config.readlines():
-                directory_path.append(read.split(' : ')[1].split('\n')[0])
+    try:
+        def csv_glob():
+            directory_path = []
+            with open('config.txt', 'r') as config:
+                for read in config.readlines():
+                    directory_path.append(read.split(' : ')[1].split('\n')[0])
+                pass
             pass
-        pass
-        begin_path = directory_path[0] + '/*.csv'
-        return tuple(glob.glob(begin_path))
+            begin_path = directory_path[0] + '/*.csv'
+            return tuple(glob.glob(begin_path))
+   
+        def checked_start():
+            csv_objects = {
+                'first'   : [],
+                'second'  : [],
+                'matches' : [],
+                'matrix'  : {}
+            }
+            csv_objects_for_indexer = {
+                'first'  : [],
+                'second' : []
+            }
 
-    def checked_start():
-
-        csv_objects = {
-            'first'   : [],
-            'second'  : [],
-            'matches' : [],
-            'matrix'  : {}
-        }
-        csv_objects_for_indexer = {
-            'first'  : [],
-            'second' : []
-        }
-
-        first_path = selecter.get()
-        second_path = selecter_s.get()
-        result_path = '\\'.join(first_path.split('\\')[:-1])
-
-        with open(first_path) as csv_object:
-            for csv_o in csv_object.readlines():
-                csv_objects['first'].append(csv_o.replace('\n', '').split(','))
-                csv_objects_for_indexer['first'].append(csv_o.replace('\n', '').split(','))
-            csv_object_s = open(second_path)
-            for csv_o in csv_object_s.readlines():
-                csv_objects['second'].append(csv_o.replace('\n', '').split(','))
-                csv_objects_for_indexer['second'].append(csv_o.replace('\n', '').split(','))
-            csv_object_s.close()
+            try:
+                with open(first_path) as csv_object:
+                    for csv_o in csv_object.readlines():
+                        csv_objects['first'].append(csv_o.replace('\n', '').split(','))
+                        csv_objects_for_indexer['first'].append(csv_o.replace('\n', '').split(','))
+                    csv_object_s = open(second_path)
+                    for csv_o in csv_object_s.readlines():
+                        csv_objects['second'].append(csv_o.replace('\n', '').split(','))
+                        csv_objects_for_indexer['second'].append(csv_o.replace('\n', '').split(','))
+                    csv_object_s.close()
+            except:
+                exit()
             
-        reader = tCOP(csv_objects, csv_objects_for_indexer, result_path)
-        reader.find_matches_m()
-        reader.matrix()
-        reader.find_matches_nm()
-        reader.nan()
-        reader.log_table()
-        reader.write_result()
+            reader = tCOP(csv_objects, csv_objects_for_indexer, result_path)
+            reader.find_matches_m()
+            reader.matrix()
+            reader.find_matches_nm()
+            reader.nan()
+            reader.log_table()
+            reader.write_result()
 
-    def save():
-        with open('config.txt', 'w') as config:
-            if txt_s.get() == '':
-                string = 'BEGIN : ' + txt.get() + '\n' + 'END : ' + txt_s.get()
-                config.write(string)
-                messagebox.showinfo('Save', 'Done!')
-            elif (txt.get() == '') and (txt_s.get() == ''):
-                messagebox.showerror('Save', 'Null values...')
-            else:
-                string = 'BEGIN : ' + txt.get() + '\n' + 'END : ' + txt_s.get()
-                config.write(string)
-                messagebox.showinfo('Save', 'Done!')         
-        pass
+        def save():
+            try:
+                with open('config.txt', 'w') as config:
+                    if txt_s.get() == '':
+                        string = 'BEGIN : ' + txt.get() + '\n' + 'END : ' + txt_s.get()
+                        config.write(string)
+                        messagebox.showinfo('Save', 'Done!')
+                    elif (txt.get() == '') and (txt_s.get() == ''):
+                        messagebox.showerror('Save', 'Null values...')
+                    else:
+                        string = 'BEGIN : ' + txt.get() + '\n' + 'END : ' + txt_s.get()
+                        config.write(string)
+                        messagebox.showinfo('Save', 'Done!')         
+            except:
+                exit()
     
-    root = Tk()
-    root.title('tCop 1.0 - Efimenko Vlad')
-    root.geometry('450x450')
+        root = Tk()
+        root.title('tCop 1.0 - Efimenko Vlad')
+        root.geometry('450x450')
 
-    label = Label(root, text="First table ->")  
-    label.grid(column=0, row=0)  
+        label = Label(root, text="First table ->")  
+        label.grid(column=0, row=0)  
     
-    selecter = Combobox(root, width=50)
-    selecter['values'] = csv_glob()
-    selecter.current(0)
-    selecter.grid(column=1, row=0)
+        selecter = Combobox(root, width=50)
+        selecter['values'] = csv_glob()
+        selecter.current(0)
+        selecter.grid(column=1, row=0)
 
-    label_s = Label(root, text="Second table ->")  
-    label_s.grid(column=0, row=1)  
+        label_s = Label(root, text="Second table ->")  
+        label_s.grid(column=0, row=1)  
     
-    selecter_s = Combobox(root, width=50)
-    selecter_s['values'] = csv_glob()
-    selecter_s.current(1)
-    selecter_s.grid(column=1, row=1)
+        selecter_s = Combobox(root, width=50)
+        selecter_s['values'] = csv_glob()
+        selecter_s.current(1)
+        selecter_s.grid(column=1, row=1)
 
-    btn = Button(root, text='Compare', command=checked_start)  
-    btn.grid(column=1, row=2)
+        btn = Button(root, text='Compare', command=checked_start)  
+        btn.grid(column=1, row=2)
 
-    label_txt = Label(root, text="Tables directory")  
-    label_txt.grid(column=0, row=3)
-    btn_t = Button(root, text="Save", command=save)  
-    btn_t.grid(column=2, row=3)  
+        label_txt = Label(root, text="Tables directory")  
+        label_txt.grid(column=0, row=3)
+        btn_t = Button(root, text="Save", command=save)  
+        btn_t.grid(column=2, row=3)  
 
-    txt = Entry(root,width=50)  
-    txt.grid(column=1, row=3)
+        txt = Entry(root,width=50)  
+        txt.grid(column=1, row=3)
 
-    label_txt_s = Label(root, text="Result directory")  
-    label_txt_s.grid(column=0, row=4) 
+        label_txt_s = Label(root, text="Result directory")  
+        label_txt_s.grid(column=0, row=4) 
 
-    txt_s = Entry(root,width=50)  
-    txt_s.grid(column=1, row=4)
-    btn_t_s = Button(root, text="Save", command=save)  
-    btn_t_s.grid(column=2, row=4)
+        txt_s = Entry(root,width=50)  
+        txt_s.grid(column=1, row=4)
+        btn_t_s = Button(root, text="Save", command=save)  
+        btn_t_s.grid(column=2, row=4)
 
-    label_form = Label(root, text="Form(result) example:")  
-    label_form.grid(column=1, row=5)
-    label_form = Label(root, text="STRING | COLUMN INDICES(W) | Wrong(W) | Loyal(L) | W/L")  
-    label_form.grid(column=1, row=6) 
+        label_form = Label(root, text="Form(result) example:")  
+        label_form.grid(column=1, row=5)
+        label_form = Label(root, text="STRING | COLUMN INDICES(W) | Wrong(W) | Loyal(L) | W/L")  
+        label_form.grid(column=1, row=6) 
     
-    root.mainloop()
-    
+        root.mainloop()
+    except:
+        messagebox.showerror('ConfigError', 'Configs is bad.')
+
 else:
     exit()
