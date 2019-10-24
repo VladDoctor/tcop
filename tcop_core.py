@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.ttk import Combobox
-import glob
 from tkinter import messagebox
+import glob
 
 class tCOP(object):
     def __init__(self, csv_objects, csv_indexer, result_path):
